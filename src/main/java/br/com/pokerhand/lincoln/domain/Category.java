@@ -125,7 +125,7 @@ public abstract class Category {
         }
     }
 
-    private static String getValue(String value) {
+    public static String getValue(String value) {
         if (value.length() == 3) {
             return value.substring(0, 2);
         } else {

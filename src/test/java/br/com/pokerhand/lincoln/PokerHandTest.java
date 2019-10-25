@@ -52,16 +52,48 @@ public class PokerHandTest {
         Assert.assertEquals(Result.DRAW, result);
     }
 
-    public void shouldBeTiebreaker() throws InvalidCardException {
+    @Test
+    public void tiebreakerHand1Win() throws InvalidCardException {
         // given
         PokerHand pokerHand1 = new PokerHand("TH JH QH AH KH");
         PokerHand pokerHand2 = new PokerHand("TC JC QC KC AC");
 
         // when
         Result result = pokerHand1.compareWith(pokerHand2);
+        Result tiebreaker = pokerHand1.tiebreakerWith(pokerHand2);
 
         // then
         Assert.assertEquals(Result.DRAW, result);
-        // TODO tiebreaker
+        Assert.assertEquals(Result.WIN, tiebreaker);
+    }
+
+    @Test
+    public void tiebreakerHand2Win() throws InvalidCardException {
+        // given
+        PokerHand pokerHand1 = new PokerHand("TH JH QH KH KH");
+        PokerHand pokerHand2 = new PokerHand("TC JC QC AC AC");
+
+        // when
+        Result result = pokerHand1.compareWith(pokerHand2);
+        Result tiebreaker = pokerHand1.tiebreakerWith(pokerHand2);
+
+        // then
+        Assert.assertEquals(Result.DRAW, result);
+        Assert.assertEquals(Result.LOSS, tiebreaker);
+    }
+
+    @Test
+    public void tiebreakerDRAW() throws InvalidCardException {
+        // given
+        PokerHand pokerHand1 = new PokerHand("TH JH QH AH KH");
+        PokerHand pokerHand2 = new PokerHand("TC JC QC AC KC");
+
+        // when
+        Result result = pokerHand1.compareWith(pokerHand2);
+        Result tiebreaker = pokerHand1.tiebreakerWith(pokerHand2);
+
+        // then
+        Assert.assertEquals(Result.DRAW, result);
+        Assert.assertEquals(Result.DRAW, tiebreaker);
     }
 }

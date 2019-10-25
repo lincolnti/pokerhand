@@ -6,6 +6,9 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.IntStream;
 
 public class PokerHand {
 
@@ -21,17 +24,46 @@ public class PokerHand {
 
         validate(pokerHand2);
 
-        if (getCategory(pokerHand1) > getCategory(pokerHand2)) {
-            return Result.WIN;
-        } else if (getCategory(pokerHand1) < getCategory(pokerHand2)) {
-            return Result.LOSS;
+        return getResult(getCategory(pokerHand1), getCategory(pokerHand2));
+    }
+
+    public Result tiebreakerWith(PokerHand anotherPokerHand) {
+        List<String> pokerHand1 = Arrays.asList(getCard().split(" "));
+        List<String> pokerHand2 = Arrays.asList(anotherPokerHand.getCard().split(" "));
+        AtomicReference<Result> result = new AtomicReference<>(Result.DRAW);
+
+        OptionalInt index = IntStream
+                .range(0, pokerHand1.size() - 1)
+                .filter(idx ->  {
+                    String hand1 = Category.getValue(pokerHand1.get(idx));
+                    String hand2 = Category.getValue(pokerHand2.get(idx));
+
+                    return !hand1.equalsIgnoreCase(hand2);
+                })
+                .findFirst();
+
+        if (index.isPresent()) {
+            String hand1 = Category.getValue(pokerHand1.get(index.getAsInt()));
+            String hand2 = Category.getValue(pokerHand2.get(index.getAsInt()));
+            result.set(getResult(getHandValue(hand1), getHandValue(hand2)));
         }
-        return Result.DRAW;
+
+        return result.get();
     }
 
     public String getCard() {
         return card;
     }
+
+    private Result getResult(Integer pokerHand1, Integer pokerHand2) {
+        if (pokerHand1 > pokerHand2) {
+            return Result.WIN;
+        } else if (pokerHand1 < pokerHand2) {
+            return Result.LOSS;
+        }
+        return Result.DRAW;
+    }
+
 
     private void validate(List<String> cards) throws InvalidCardException {
         if (CollectionUtils.isEmpty(cards)) throw new InvalidCardException("Carta inválida");
@@ -58,5 +90,36 @@ public class PokerHand {
             return 2;
         }
         return 1;
+    }
+
+    private Integer getHandValue(String value) {
+        switch (value.toUpperCase()) {
+            case "A":
+                return 13;
+            case "K":
+                return 12;
+            case "Q":
+                return 11;
+            case "J":
+                return 10;
+            case "T":
+                return 9;
+            case "9":
+                return 8;
+            case "8":
+                return 7;
+            case "7":
+                return 6;
+            case "6":
+                return 5;
+            case "5":
+                return 4;
+            case "4":
+                return 3;
+            case "3":
+                return 2;
+            default:
+                return 1;
+        }
     }
 }
