@@ -26,12 +26,12 @@ public class CategoryTest {
     }
 
     @Test
-    public void isStraight() {
+    public void isStraightFlush() {
         // given
         String cards = "5S 6S 7S 8S 9S";
 
         // when
-        Boolean result = Category.isStraight(Arrays.asList(cards.split(" ")));
+        Boolean result = Category.isStraightFlush(Arrays.asList(cards.split(" ")));
 
         // then
         Assert.assertEquals(true, result);
@@ -68,6 +68,54 @@ public class CategoryTest {
 
         // when
         Boolean result = Category.isFlush(Arrays.asList(cards.split(" ")));
+
+        // then
+        Assert.assertEquals(true, result);
+    }
+
+    @Test
+    public void isStraight() {
+        // given
+        String cards = "2S 3H 4D 5C 6S";
+
+        // when
+        Boolean result = Category.isStraight(Arrays.asList(cards.split(" ")));
+
+        // then
+        Assert.assertEquals(true, result);
+    }
+
+    @Test
+    public void isThreeOfAKind() {
+        // given
+        String cards = "JS JH JD 5C 8S";
+
+        // when
+        Boolean result = Category.isThreeOfAKind(Arrays.asList(cards.split(" ")));
+
+        // then
+        Assert.assertEquals(true, result);
+    }
+
+    @Test
+    public void isTwoPair() {
+        // given
+        String cards = "JS JH AD AC 8S";
+
+        // when
+        Boolean result = Category.isTwoPair(Arrays.asList(cards.split(" ")));
+
+        // then
+        Assert.assertEquals(true, result);
+    }
+
+    @Test
+    public void isPair() {
+        // given
+        String cards = "JS JH QD AC KS";
+
+        // when
+        Boolean result = Category.isPair(Arrays.asList(cards.split(" ")));
 
         // then
         Assert.assertEquals(true, result);

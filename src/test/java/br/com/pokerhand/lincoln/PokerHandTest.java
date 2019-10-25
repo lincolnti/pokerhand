@@ -42,13 +42,26 @@ public class PokerHandTest {
     @Test
     public void shouldBeDRAW() throws InvalidCardException {
         // given
-        PokerHand pokerHand1 = new PokerHand("2S 3H 4H 5H 6D");
-        PokerHand pokerHand2 = new PokerHand("2S 3H 4D 5H 6C");
+        PokerHand pokerHand1 = new PokerHand("TH JH QH KH AH");
+        PokerHand pokerHand2 = new PokerHand("TC JC QC KC AC");
 
         // when
         Result result = pokerHand1.compareWith(pokerHand2);
 
         // then
         Assert.assertEquals(Result.DRAW, result);
+    }
+
+    public void shouldBeTiebreaker() throws InvalidCardException {
+        // given
+        PokerHand pokerHand1 = new PokerHand("TH JH QH AH KH");
+        PokerHand pokerHand2 = new PokerHand("TC JC QC KC AC");
+
+        // when
+        Result result = pokerHand1.compareWith(pokerHand2);
+
+        // then
+        Assert.assertEquals(Result.DRAW, result);
+        // TODO tiebreaker
     }
 }

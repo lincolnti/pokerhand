@@ -1,22 +1,23 @@
 package br.com.pokerhand.lincoln.domain;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class Category {
 
     public static Boolean isRoyalFlush(List<String> cards) {
+        List<String> suits = cards.stream().map(s -> getSuit(s)).collect(Collectors.toList());
         Boolean hasA = cards.stream().anyMatch(card -> card.startsWith("A"));
         Boolean hasK = cards.stream().anyMatch(card -> card.startsWith("K"));
         Boolean hasQ = cards.stream().anyMatch(card -> card.startsWith("Q"));
         Boolean hasJ = cards.stream().anyMatch(card -> card.startsWith("J"));
         Boolean hasT = cards.stream().anyMatch(card -> card.startsWith("T"));
-        return hasA && hasK && hasQ && hasJ && hasT;
+        return hasA && hasK && hasQ && hasJ && hasT && isSameSuit(suits);
     }
 
-    public static Boolean isStraight(List<String> cards) {
+    public static Boolean isStraightFlush(List<String> cards) {
         List<String> suits = cards.stream().map(card -> getSuit(card)).collect(Collectors.toList());
         int[] filtered = cards.stream().filter(card -> isNumber(card)).mapToInt(card -> Integer.valueOf(getValue(card))).toArray();
         return isConsecutive(filtered) && isSameSuit(suits);
@@ -49,29 +50,35 @@ public abstract class Category {
         return isSameSuit(cards.stream().map(s -> getSuit(s)).collect(Collectors.toList()));
     }
 
-    public static Boolean isSequence() {
-        // TODO
-        return false;
+    public static Boolean isStraight(List<String> cards) {
+        Boolean isDifferentSuit = IntStream.range(0, cards.size())
+                .filter(idx -> idx+1 != cards.size()
+                        && getSuit(cards.get(idx)).equalsIgnoreCase(getSuit(cards.get(idx+1)))).count() == 0;
+
+        int[] filtered = cards.stream().filter(card -> isNumber(card)).mapToInt(card -> Integer.valueOf(getValue(card))).toArray();
+
+        return isConsecutive(filtered) && isDifferentSuit;
     }
 
-    public static Boolean isThree() {
-        // TODO
-        return false;
+    public static Boolean isThreeOfAKind(List<String> cards) {
+        Boolean threeOfAKind = cards.stream().anyMatch(card -> isSameValue(card, cards, 3));
+        Boolean twoNotRelated = cards.stream().filter(card -> isSameValue(card, cards, 1)).count() == 2;
+        return threeOfAKind && twoNotRelated;
     }
 
-    public static Boolean isTwoPair() {
-        // TODO
-        return false;
+    public static Boolean isTwoPair(List<String> cards) {
+        return cards.stream().map(card -> getValue(card)).collect(Collectors.toSet())
+                .stream()
+                .filter(card -> isSameValue(card, cards, 2))
+                .count() == 2;
     }
 
-    public static Boolean isPair() {
-        // TODO
-        return false;
-    }
-
-    public static Boolean isHight() {
-        // TODO
-        return false;
+    public static Boolean isPair(List<String> cards) {
+        System.out.println();
+        return cards.stream().map(card -> getValue(card)).collect(Collectors.toSet())
+                .stream()
+                .filter(card -> isSameValue(card, cards, 2))
+                .count() == 1;
     }
 
     private static boolean isConsecutive(int... numbers) {

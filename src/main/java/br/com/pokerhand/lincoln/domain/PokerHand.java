@@ -40,7 +40,7 @@ public class PokerHand {
     private Integer getCategory(List<String> cards) {
         if (Category.isRoyalFlush(cards)) {
             return 10;
-        } else if (Category.isStraight(cards)) {
+        } else if (Category.isStraightFlush(cards)) {
             return 9;
         } else if (Category.isFourOfAKind(cards)) {
             return 8;
@@ -48,13 +48,13 @@ public class PokerHand {
             return 7;
         } else if (Category.isFlush(cards)) {
             return 6;
-        } else if (Category.isSequence()) {
+        } else if (Category.isStraight(cards)) {
             return 5;
-        } else if (Category.isThree()) {
+        } else if (Category.isThreeOfAKind(cards)) {
             return 4;
-        } else if (Category.isTwoPair()) {
+        } else if (Category.isTwoPair(cards)) {
             return 3;
-        } else if (Category.isPair()) {
+        } else if (Category.isPair(cards)) {
             return 2;
         }
         return 1;
