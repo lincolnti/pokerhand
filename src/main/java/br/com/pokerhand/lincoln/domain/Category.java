@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public abstract class Category {
+public class Category {
 
     public static Boolean isRoyalFlush(List<String> cards) {
         List<String> suits = cards.stream().map(s -> getSuit(s)).collect(Collectors.toList());
